@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head(title='Online Shop - Cart')"></head>
+<body>
+<div th:replace="fragments :: navbar"></div>
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="title">Products list</div>
+            <div th:if="${#lists.isEmpty(@cartContainer.cartItems)}" class="alert alert-info">Корзина пуста</div>
+
+            <div th:if="${not #lists.isEmpty(@cartContainer.cartItems)}">
+                <table class="table">
+                    <tr>
+                        <th></th>
+                        <th>Цена за шт.</th>
+                        <th>Кол-во</th>
+                        <th>Всего</th>
+                        <th></th>
+                    </tr>
+                    <tr th:each="item : ${@cartContainer.cartItems}">
+                        <td th:text="${item.product.name}"></td>
+                        <td th:text="${item.product.price}"></td>
+                        <td th:text="${item.amount}"></td>
+                        <td th:text="${@cartContainer.getProductTotalPrice(item.product.id)}"></td>
+                        <td><a th:href="@{'/cart/remove/' + ${item.product.id}}">убрать</a></td>
+                    </tr>
+
+                    <tr></tr>
+                    <tr>
+                        <td>ИТОГО:</td>
+                        <td></td>
+                        <td></td>
+                        <td th:text="${@cartContainer.totalPrice}"></td>
+                    </tr>
+                </table>
+                <div class="buttons">
+                    <a class="btn btn-primary" th:href="@{/cart/clear}">Очистить</a>
+                    <a class="btn btn-primary" th:href="@{/cart/order}">Оформить заказ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="fragments :: footer"></div>
+</body>
+</html>

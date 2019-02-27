@@ -1,0 +1,114 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="head (title)">
+
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <title th:text="${title}"></title>
+
+    <link rel="stylesheet" href="/webjars/bootstrap/3.3.7/css/bootstrap.min.css"/>
+
+    <script src="webjars/jquery/1.11.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" th:href="@{/css/main.css}" href="../static/css/main.css"/>
+</head>
+<body>
+<div th:fragment="navbar" class="container">
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">Shop</a>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a th:href="@{/registration}" th:if="${#request.userPrincipal == null}"><span
+                        class="glyphicon glyphicon-user"></span> Регистрация</a></li>
+                <li><a th:href="@{/login}" th:if="${#request.userPrincipal == null}"><span
+                        class="glyphicon glyphicon-log-in"></span> Вход</a></li>
+                <li><a th:href="@{/logout}" th:if="${#request.userPrincipal != null}"><span
+                        class="glyphicon glyphicon-log-out"></span> Выход</a></li>
+                <li><a th:href="@{/cart}"><span class="glyphicon glyphicon-shopping-cart"></span> Корзина</a></li>
+                <li><a th:href="@{/orders}" th:if="${#request.userPrincipal != null}"><span
+                        class="glyphicon glyphicon-th-list"></span> Заказы</a></li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+<div th:fragment="footer" class="container">
+    <hr/>
+    <div class="row">
+        <div class="col-sm-12 text-center">
+            <p class="text-center">&copy; 2019
+                <span th:if="${#request.userPrincipal != null}">
+                | Logged user: <span th:text="${#request.userPrincipal.name}"></span> |
+                Roles: <span>НЕ РАБОТАЕТ</span> |
+                <a th:href="@{/logout}">Выход</a>
+                    </span>
+            </p>
+        </div>
+    </div>
+    <script type="text/javascript" src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</div>
+
+<div th:fragment="orderStepHeader (step)" class="step-line-wrapper">
+    <ul>
+        <li th:class="${step} == 1 ? 'active' : (${step} > 1 ? 'passed' : null)">
+            <span class="circle">1</span>
+            <span class="label">Способ получения</span>
+        </li>
+        <li th:class="${step} == 2 ? 'active' : (${step} > 2 ? 'passed' : null)">
+            <span class="circle">2</span>
+            <span class="label">Контактная информация</span>
+        </li>
+        <li th:class="${step} == 3 ? 'active' : (${step} > 3 ? 'passed' : null)">
+            <span class="circle">3</span>
+            <span class="label">Способ оплаты</span>
+        </li>
+        <li th:class="${step} == 4 ? 'active' : (${step} > 4 ? 'passed' : null)">
+            <span class="circle">4</span>
+            <span class="label">Финал</span>
+        </li>
+    </ul>
+</div>
+
+<div th:fragment="cart" class="panel panel-default">
+    <div class="panel-body">
+        <div class="title">Содержание корзины</div>
+
+        <table class="table">
+            <tr>
+                <th></th>
+                <th>Цена за шт.</th>
+                <th>Кол-во</th>
+                <th>Всего</th>
+            </tr>
+            <tr th:each="item : ${@cartContainer.cartItems}">
+                <td th:text="${item.product.name}"></td>
+                <td th:text="${item.product.price}"></td>
+                <td th:text="${item.amount}"></td>
+                <td th:text="${@cartContainer.getProductTotalPrice(item.product.id)}"></td>
+            </tr>
+
+            <tr></tr>
+            <tr>
+                <td>ИТОГО:</td>
+                <td></td>
+                <td></td>
+                <td th:text="${@cartContainer.totalPrice}"></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div th:fragment="cartDelivery" class="panel panel-default">
+    <div class="panel-body">
+        <div class="title">Способ получения товара</div>
+        <div th:if="${@cartContainer.cart.deliveryAddress == null}">Самовывоз из магазина</div>
+        <div th:if="${@cartContainer.cart.deliveryAddress != null}">Доставка по адресу: <span th:text="${@cartContainer.cart.deliveryAddress}"></span></div>
+    </div>
+</div>
+
+</body>
+</html>
